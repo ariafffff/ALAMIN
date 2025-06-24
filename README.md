@@ -944,4 +944,34 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadProducts(currentCategory);
         });
-    </script>
+    </script><script>
+  const form = document.getElementById('orderForm');
+  const successMsg = document.getElementById('successMsg');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const data = {
+      name: form.name.value,
+      phone: form.phone.value,
+      product: form.product.value,
+      address: form.address.value,
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbyB7NRX4-TlIRIVCwbW1bFuOg7ssBrOLlJ34OSYuvfC29w1SpYRXpA9pzn_u-wPOr78Ow/exec ", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.text())
+    .then(response => {
+      successMsg.textContent = "অর্ডার সফলভাবে সাবমিট হয়েছে!";
+      form.reset();
+    })
+    .catch(err => {
+      successMsg.textContent = "সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।";
+    });
+  });
+</script>
