@@ -945,6 +945,15 @@
         });
     </script>
 </body>
-</html>
+</html><form id="orderForm">
+  <input type="text" name="name" placeholder="Your Name" required />
+  <input type="text" name="phone" placeholder="Phone Number" required />
+  <input type="text" name="product" placeholder="Product Name" required />
+  <textarea name="address" placeholder="Address" required></textarea>
+  <button type="submit">Submit Order</button>
+</form>
+
+<p id="successMsg" style="color: green;"></p>
+
 
 # fghbgfhgfgf
