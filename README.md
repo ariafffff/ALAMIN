@@ -2,958 +2,1188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chilmari E-shop</title>
+    <title>Chilmari E-shop - Admin Panel</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Toast Notification CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .section { display: none; }
-        .active-section { display: block; }
-        .active-nav { color: #f97316; }
-        .product-card:hover { transform: translateY(-5px); transition: all 0.3s; }
-        .order-card { border-left: 4px solid #f97316; }
-        .quantity-btn { width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; }
+        .sidebar { width: 250px; transition: all 0.3s; }
+        .sidebar-collapsed { width: 70px; }
+        .sidebar-collapsed .sidebar-text { display: none; }
+        .sidebar-collapsed .logo-text { display: none; }
+        .sidebar-collapsed .menu-item { justify-content: center; }
+        .content-area { margin-left: 250px; transition: all 0.3s; }
+        .content-collapsed { margin-left: 70px; }
+        .active-menu { background-color: #fb923c; color: white; }
+        .dashboard-card { transition: all 0.3s; }
+        .dashboard-card:hover { transform: translateY(-5px); }
     </style>
 </head>
-<body class="bg-gray-100 pb-16">
-    <!-- Header with Search -->
-    <header class="bg-orange-500 text-white p-4 sticky top-0 z-10">
-        <div class="container mx-auto flex items-center">
-            <div class="w-10 h-10 mr-2 bg-white rounded-full flex items-center justify-center">
-                <span class="text-orange-500 font-bold">CE</span>
+<body class="bg-gray-100">
+    <!-- Admin Layout -->
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar bg-gray-800 text-white fixed h-full">
+            <div class="p-4 flex items-center border-b border-gray-700">
+                <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+                    <span class="font-bold">CE</span>
+                </div>
+                <span class="logo-text ml-3 text-xl font-bold">Chilmari Shop</span>
             </div>
-            <div class="flex-1 relative">
-                <input type="text" id="search-input" placeholder="Search products..."
-                       class="w-full py-2 px-4 rounded text-gray-800 text-sm">
-                <button onclick="searchProducts()" class="absolute right-0 top-0 h-full px-4 bg-orange-600 rounded-r">
-                    🔍
-                </button>
+           
+            <div class="p-4">
+                <div class="mb-6">
+                    <div class="flex items-center mb-2 p-2 rounded hover:bg-gray-700 cursor-pointer">
+                        <img src="https://randomuser.me/api/portraits/men/1.jpg" class="w-8 h-8 rounded-full">
+                        <div class="sidebar-text ml-3">
+                            <div class="font-medium">Admin User</div>
+                            <div class="text-xs text-gray-400">Super Admin</div>
+                        </div>
+                    </div>
+                </div>
+               
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" class="menu-item flex items-center p-2 rounded hover:bg-gray-700 active-menu" onclick="showAdminSection('dashboard')">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span class="sidebar-text ml-3">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="menu-item flex items-center p-2 rounded hover:bg-gray-700" onclick="showAdminSection('products')">
+                            <i class="fas fa-box-open"></i>
+                            <span class="sidebar-text ml-3">Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="menu-item flex items-center p-2 rounded hover:bg-gray-700" onclick="showAdminSection('orders')">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="sidebar-text ml-3">Orders</span>
+                            <span class="sidebar-text ml-auto bg-orange-500 text-white text-xs px-2 py-1 rounded-full">15</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="menu-item flex items-center p-2 rounded hover:bg-gray-700" onclick="showAdminSection('customers')">
+                            <i class="fas fa-users"></i>
+                            <span class="sidebar-text ml-3">Customers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="menu-item flex items-center p-2 rounded hover:bg-gray-700" onclick="showAdminSection('categories')">
+                            <i class="fas fa-tags"></i>
+                            <span class="sidebar-text ml-3">Categories</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="menu-item flex items-center p-2 rounded hover:bg-gray-700" onclick="showAdminSection('reports')">
+                            <i class="fas fa-chart-bar"></i>
+                            <span class="sidebar-text ml-3">Reports</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="menu-item flex items-center p-2 rounded hover:bg-gray-700" onclick="showAdminSection('settings')">
+                            <i class="fas fa-cog"></i>
+                            <span class="sidebar-text ml-3">Settings</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
-            <div class="ml-4 relative" onclick="showSection('cart')">
-                <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
-                🛒
+           
+            <div class="absolute bottom-0 w-full p-4 border-t border-gray-700">
+                <a href="#" class="menu-item flex items-center p-2 rounded hover:bg-gray-700" onclick="toggleSidebar()">
+                    <i class="fas fa-chevron-left"></i>
+                    <span class="sidebar-text ml-3">Collapse</span>
+                </a>
             </div>
         </div>
-    </header>
 
-    <!-- Main Content Sections -->
-    <main>
-        <!-- Home Section -->
-        <section id="home-section" class="section active-section">
-            <!-- Categories -->
-            <div class="container mx-auto p-4 bg-white shadow-sm">
-                <h2 class="text-lg font-bold mb-2">Categories</h2>
-                <div class="grid grid-cols-4 gap-2">
-                    <div class="category-item text-center p-2" onclick="loadProducts('electronics')">
-                        <div class="bg-gray-200 rounded-full w-12 h-12 mx-auto mb-1 flex items-center justify-center">
-                            📱
-                        </div>
-                        <span class="text-xs">Electronics</span>
-                    </div>
-                    <div class="category-item text-center p-2" onclick="loadProducts('clothing')">
-                        <div class="bg-gray-200 rounded-full w-12 h-12 mx-auto mb-1 flex items-center justify-center">
-                            👕
-                        </div>
-                        <span class="text-xs">Clothing</span>
-                    </div>
-                    <div class="category-item text-center p-2" onclick="loadProducts('grocery')">
-                        <div class="bg-gray-200 rounded-full w-12 h-12 mx-auto mb-1 flex items-center justify-center">
-                            🛒
-                        </div>
-                        <span class="text-xs">Grocery</span>
-                    </div>
-                    <div class="category-item text-center p-2" onclick="loadProducts('household')">
-                        <div class="bg-gray-200 rounded-full w-12 h-12 mx-auto mb-1 flex items-center justify-center">
-                            🏠
-                        </div>
-                        <span class="text-xs">Household</span>
-                    </div>
+        <!-- Main Content -->
+        <div id="content-area" class="content-area flex-1 overflow-auto">
+            <!-- Top Navigation -->
+            <nav class="bg-white shadow py-4 px-6 flex justify-between items-center">
+                <div class="flex items-center">
+                    <button onclick="toggleSidebar()" class="mr-4 text-gray-600">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="admin-section-title" class="text-xl font-bold text-gray-800">Dashboard</h1>
                 </div>
-            </div>
-
-            <!-- Products -->
-            <div class="container mx-auto p-4">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold">Featured Products</h2>
-                    <div class="text-sm">
-                        <span id="current-category">All</span>
-                    </div>
-                </div>
-                <div id="products-container" class="grid grid-cols-2 gap-4">
-                    <!-- Products will be loaded here -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Product View Section -->
-        <section id="product-view-section" class="section">
-            <div class="container mx-auto p-4">
-                <button onclick="goBack()" class="mb-4 flex items-center text-orange-500">
-                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    Back
-                </button>
                
-                <div class="bg-white rounded-lg shadow overflow-hidden">
-                    <div class="h-64 bg-gray-200">
-                        <img id="product-view-image" src="" alt="" class="w-full h-full object-cover">
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="text-gray-600">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                        </button>
+                    </div>
+                    <div class="relative">
+                        <button class="text-gray-600">
+                            <i class="fas fa-envelope"></i>
+                            <span class="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">5</span>
+                        </button>
+                    </div>
+                    <div class="border-l pl-4">
+                        <div class="flex items-center">
+                            <img src="https://randomuser.me/api/portraits/men/1.jpg" class="w-8 h-8 rounded-full">
+                            <span class="ml-2">Admin</span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Admin Sections -->
+            <div class="p-6">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="admin-section">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <div class="dashboard-card bg-white p-6 rounded-lg shadow">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-500">Total Sales</p>
+                                    <h3 class="text-2xl font-bold">৳1,25,000</h3>
+                                </div>
+                                <div class="bg-orange-100 p-3 rounded-full text-orange-500">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                            </div>
+                            <p class="mt-2 text-sm text-green-500">
+                                <i class="fas fa-arrow-up"></i> 12% from last month
+                            </p>
+                        </div>
+                       
+                        <div class="dashboard-card bg-white p-6 rounded-lg shadow">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-500">Total Orders</p>
+                                    <h3 class="text-2xl font-bold">156</h3>
+                                </div>
+                                <div class="bg-blue-100 p-3 rounded-full text-blue-500">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                            </div>
+                            <p class="mt-2 text-sm text-green-500">
+                                <i class="fas fa-arrow-up"></i> 8% from last month
+                            </p>
+                        </div>
+                       
+                        <div class="dashboard-card bg-white p-6 rounded-lg shadow">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-500">Total Products</p>
+                                    <h3 class="text-2xl font-bold">48</h3>
+                                </div>
+                                <div class="bg-green-100 p-3 rounded-full text-green-500">
+                                    <i class="fas fa-boxes"></i>
+                                </div>
+                            </div>
+                            <p class="mt-2 text-sm text-gray-500">
+                                <i class="fas fa-equals"></i> Same as last month
+                            </p>
+                        </div>
+                       
+                        <div class="dashboard-card bg-white p-6 rounded-lg shadow">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-500">Total Customers</p>
+                                    <h3 class="text-2xl font-bold">89</h3>
+                                </div>
+                                <div class="bg-purple-100 p-3 rounded-full text-purple-500">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                            <p class="mt-2 text-sm text-green-500">
+                                <i class="fas fa-arrow-up"></i> 15% from last month
+                            </p>
+                        </div>
                     </div>
                    
-                    <div class="p-4">
-                        <h2 id="product-view-name" class="text-xl font-bold mb-2"></h2>
-                        <p id="product-view-price" class="text-orange-500 text-xl font-bold mb-4"></p>
-                        <p id="product-view-description" class="text-gray-600 mb-4"></p>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-white p-6 rounded-lg shadow lg:col-span-2">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold">Sales Overview</h3>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>Last 7 Days</option>
+                                    <option>Last Month</option>
+                                    <option selected>Last Year</option>
+                                </select>
+                            </div>
+                            <div class="h-64 bg-gray-100 rounded flex items-center justify-center">
+                                [Sales Chart Placeholder]
+                            </div>
+                        </div>
                        
-                        <div class="flex space-x-2">
-                            <button onclick="addToCartFromView()"
-                                    class="flex-1 bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600">
-                                Add to Cart
-                            </button>
-                            <button onclick="buyNowFromView()"
-                                    class="flex-1 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
-                                Buy Now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-               
-                <div class="mt-6 bg-white rounded-lg shadow p-4">
-                    <h3 class="font-bold mb-2">Product Details</h3>
-                    <div id="product-view-details" class="text-sm text-gray-600">
-                        <!-- Additional details will be loaded here -->
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Cart Section -->
-        <section id="cart-section" class="section">
-            <div class="container mx-auto p-4">
-                <h2 class="text-lg font-bold mb-4">Your Cart</h2>
-                <div id="cart-items">
-                    <p class="text-center text-gray-500 py-8">Your cart is empty</p>
-                </div>
-                <div class="mt-4 p-4 bg-white rounded shadow">
-                    <h3 class="font-bold mb-2">Order Summary</h3>
-                    <div class="flex justify-between mb-1">
-                        <span>Subtotal:</span>
-                        <span id="cart-subtotal">৳0</span>
-                    </div>
-                    <div class="flex justify-between mb-1">
-                        <span>Delivery:</span>
-                        <span>৳50</span>
-                    </div>
-                    <div class="flex justify-between font-bold mt-2">
-                        <span>Total:</span>
-                        <span id="cart-total">৳50</span>
-                    </div>
-                    <button onclick="showSection('checkout')" class="mt-4 w-full bg-orange-500 text-white py-2 rounded">
-                        Proceed to Checkout
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Checkout Section -->
-        <section id="checkout-section" class="section">
-            <div class="container mx-auto p-4">
-                <button onclick="showSection('cart')" class="mb-4 flex items-center text-orange-500">
-                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    Back to Cart
-                </button>
-               
-                <div class="bg-white rounded shadow p-4 mb-4">
-                    <h2 class="text-lg font-bold mb-4">Delivery Information</h2>
-                    <form id="delivery-form">
-                        <div class="mb-3">
-                            <label class="block text-sm font-medium mb-1">Full Name</label>
-                            <input type="text" required class="w-full p-2 border rounded"
-                                   pattern="[A-Za-z ]{3,}" title="Please enter at least 3 characters">
-                        </div>
-                        <div class="mb-3">
-                            <label class="block text-sm font-medium mb-1">Phone Number</label>
-                            <input type="tel" required class="w-full p-2 border rounded"
-                                   pattern="01[3-9]\d{8}" title="Please enter a valid Bangladeshi phone number">
-                        </div>
-                        <div class="mb-3">
-                            <label class="block text-sm font-medium mb-1">Delivery Address</label>
-                            <textarea required class="w-full p-2 border rounded" rows="3" minlength="10"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="block text-sm font-medium mb-1">Delivery Area</label>
-                            <select class="w-full p-2 border rounded" disabled>
-                                <option>Chilmari Only</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-               
-                <div class="bg-white rounded shadow p-4 mb-4">
-                    <h2 class="text-lg font-bold mb-4">Payment Method</h2>
-                    <div class="space-y-3">
-                        <div class="flex items-center">
-                            <input type="radio" id="cod" name="payment" value="cod" checked class="mr-2">
-                            <label for="cod" class="flex items-center">
-                                <span class="bg-gray-200 p-1 rounded mr-2">💰</span>
-                                Cash on Delivery (COD)
-                            </label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="radio" id="bkash" name="payment" value="bkash" class="mr-2">
-                            <label for="bkash" class="flex items-center">
-                                <span class="bg-green-100 p-1 rounded mr-2">💳</span>
-                                bKash Payment
-                            </label>
-                        </div>
-                        <div id="bkash-details" class="hidden pl-6 mt-2">
-                            <div class="mb-2">
-                                <p class="text-sm">Send money to: <span class="font-bold">01770706309</span></p>
-                            </div>
-                            <div class="mb-2">
-                                <label class="block text-sm font-medium mb-1">bKash Transaction ID</label>
-                                <input type="text" class="w-full p-2 border rounded" pattern="\d{10}" title="Please enter 10 digit transaction ID">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-               
-                <div class="bg-white rounded shadow p-4">
-                    <h2 class="text-lg font-bold mb-4">Order Summary</h2>
-                    <div id="checkout-items" class="mb-3">
-                        <!-- Items will be loaded here -->
-                    </div>
-                    <div class="border-t pt-3">
-                        <div class="flex justify-between mb-1">
-                            <span>Subtotal:</span>
-                            <span id="checkout-subtotal">৳0</span>
-                        </div>
-                        <div class="flex justify-between mb-1">
-                            <span>Delivery:</span>
-                            <span>৳50</span>
-                        </div>
-                        <div class="flex justify-between font-bold mt-2">
-                            <span>Total:</span>
-                            <span id="checkout-total">৳50</span>
-                        </div>
-                    </div>
-                    <button onclick="placeOrder()" class="mt-4 w-full bg-orange-500 text-white py-2 rounded">
-                        Place Order
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Orders Section -->
-        <section id="orders-section" class="section">
-            <div class="container mx-auto p-4">
-                <h2 class="text-lg font-bold mb-4">Your Orders</h2>
-                <div id="orders-list">
-                    <!-- Orders will be loaded here -->
-                    <p class="text-center text-gray-500 py-8">No orders yet</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Account Section -->
-        <section id="account-section" class="section">
-            <div class="container mx-auto p-4">
-                <h2 class="text-lg font-bold mb-4">Your Account</h2>
-                <div id="user-info" class="bg-white p-4 rounded shadow">
-                    <!-- User info will be loaded here -->
-                    <p>Please login to view your account</p>
-                    <button onclick="showLoginForm()" class="mt-2 bg-orange-500 text-white py-1 px-3 rounded text-sm">
-                        Login
-                    </button>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg flex justify-around items-center p-3">
-        <a href="#" class="text-center text-orange-500 active-nav" onclick="showSection('home')">
-            <div class="w-6 h-6 mx-auto">🏠</div>
-            <span class="text-xs">Home</span>
-        </a>
-        <a href="#" class="text-center text-gray-600" onclick="showSection('cart')">
-            <div class="w-6 h-6 mx-auto">🛒</div>
-            <span class="text-xs">Cart</span>
-        </a>
-        <a href="#" class="text-center text-gray-600" onclick="showSection('orders')">
-            <div class="w-6 h-6 mx-auto">📦</div>
-            <span class="text-xs">Orders</span>
-        </a>
-        <a href="#" class="text-center text-gray-600" onclick="showSection('account')">
-            <div class="w-6 h-6 mx-auto">👤</div>
-            <span class="text-xs">Account</span>
-        </a>
-    </nav>
-
-    <!-- Support Floating Button - Fixed WhatsApp Button -->
-    <div class="fixed bottom-16 right-4 z-20">
-        <a href="https://wa.me/8801945312372"
-           target="_blank"
-           class="bg-green-500 text-white rounded-full p-3 shadow-lg block"
-           onclick="window.open('https://wa.me/8801945312372', '_blank')">
-            💬
-        </a>
-    </div>
-
-    <!-- Toast Notification JS -->
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-   
-    <script>
-        // Sample Product Data with more items
-        const sampleProducts = {
-            electronics: [
-                {
-                    id: "e1",
-                    name: "Smartphone X3",
-                    price: 15500,
-                    image: "https://m.media-amazon.com/images/I/61L1ItFgFHL._SL1500_.jpg",
-                    description: "6.5 inch display, 128GB storage",
-                    details: "Brand: XYZ\nModel: X3\nColor: Black\nRAM: 6GB\nStorage: 128GB\nBattery: 5000mAh"
-                },
-                {
-                    id: "e2",
-                    name: "Wireless Earbuds",
-                    price: 1200,
-                    image: "https://m.media-amazon.com/images/I/51RBk3kAq5L._SL1500_.jpg",
-                    description: "Bluetooth 5.0, 20 hours battery",
-                    details: "Brand: SoundPlus\nBluetooth Version: 5.0\nBattery Life: 20 hours\nCharging Time: 2 hours\nWater Resistance: IPX4"
-                },
-                {
-                    id: "e3",
-                    name: "Power Bank 10000mAh",
-                    price: 800,
-                    image: "https://m.media-amazon.com/images/I/61GIxXleO9L._SL1500_.jpg",
-                    description: "Fast charging, dual USB ports",
-                    details: "Capacity: 10000mAh\nInput: 5V/2A\nOutput: 5V/2.1A\nPorts: 2 USB\nLED Indicator: Yes"
-                },
-                {
-                    id: "e4",
-                    name: "Smart Watch",
-                    price: 2500,
-                    image: "https://m.media-amazon.com/images/I/61XDeOOr0RL._SL1500_.jpg",
-                    description: "Heart rate monitor, waterproof",
-                    details: "Display: 1.4\" Touchscreen\nBattery: 7 days\nWaterproof: IP68\nSensors: Heart rate, steps\nCompatibility: Android/iOS"
-                }
-            ],
-            clothing: [
-                {
-                    id: "c1",
-                    name: "Men's T-Shirt",
-                    price: 350,
-                    image: "https://m.media-amazon.com/images/I/61-jAhtF86L._AC_UL1500_.jpg",
-                    description: "100% cotton, regular fit",
-                    details: "Material: 100% Cotton\nFit: Regular\nSleeve: Short\nColor: Black\nCare: Machine wash"
-                },
-                {
-                    id: "c2",
-                    name: "Women's Scarf",
-                    price: 250,
-                    image: "https://m.media-amazon.com/images/I/71sx7+-qJ5L._AC_UL1500_.jpg",
-                    description: "Soft fabric, stylish design",
-                    details: "Material: Polyester\nDimensions: 70\" x 28\"\nPattern: Floral\nSeason: All season\nCare: Hand wash"
-                },
-                {
-                    id: "c3",
-                    name: "Kids Jacket",
-                    price: 600,
-                    image: "https://m.media-amazon.com/images/I/71Qn8Y+QmJL._AC_UL1500_.jpg",
-                    description: "Winter jacket, warm material",
-                    details: "Material: Polyester\nLining: Fleece\nClosure: Zipper\nPockets: 2\nAge: 5-7 years"
-                },
-                {
-                    id: "c4",
-                    name: "Saree",
-                    price: 1200,
-                    image: "https://m.media-amazon.com/images/I/81VJZ+8X1YL._AC_UL1500_.jpg",
-                    description: "Traditional Bangladeshi saree",
-                    details: "Fabric: Cotton Silk\nBlouse: Included\nLength: 5.5 meters\nWork: Embroidery\nOccasion: Wedding/Festival"
-                }
-            ],
-            grocery: [
-                {
-                    id: "g1",
-                    name: "Pure Mustard Oil",
-                    price: 180,
-                    image: "https://m.media-amazon.com/images/I/71YHblzCgVL._SL1500_.jpg",
-                    description: "1 liter, 100% pure",
-                    details: "Brand: PureGold\nQuantity: 1 liter\nType: Cold Pressed\nShelf Life: 12 months\nOrigin: Bangladesh"
-                },
-                {
-                    id: "g2",
-                    name: "Basmati Rice",
-                    price: 95,
-                    image: "https://m.media-amazon.com/images/I/81W+0XwuJVL._SL1500_.jpg",
-                    description: "5kg pack, premium quality",
-                    details: "Brand: Aromatic\nQuantity: 5kg\nType: Basmati\nGrain Length: Extra Long\nAge: New Crop"
-                },
-                {
-                    id: "g3",
-                    name: "Honey",
-                    price: 300,
-                    image: "https://m.media-amazon.com/images/I/71RMuOKN3VL._SL1500_.jpg",
-                    description: "Pure natural honey, 500gm",
-                    details: "Brand: Nature's Gift\nQuantity: 500gm\nType: Forest Honey\nPurity: 100%\nBenefits: Immunity Booster"
-                },
-                {
-                    id: "g4",
-                    name: "Spices Pack",
-                    price: 150,
-                    image: "https://m.media-amazon.com/images/I/81d5OrW-AQL._SL1500_.jpg",
-                    description: "5 essential spices",
-                    details: "Contents: Turmeric, Cumin, Coriander, Chili, Garam Masala\nQuantity: 100gm each\nOrigin: Bangladesh\nPackaging: Airtight\nShelf Life: 12 months"
-                }
-            ],
-            household: [
-                {
-                    id: "h1",
-                    name: "Non-Stick Pan",
-                    price: 650,
-                    image: "https://m.media-amazon.com/images/I/71UGB5x3VQL._SL1500_.jpg",
-                    description: "24cm, durable coating",
-                    details: "Diameter: 24cm\nMaterial: Aluminum\nCoating: Ceramic\nHandle: Heat Resistant\nInduction Compatible: Yes"
-                },
-                {
-                    id: "h2",
-                    name: "Broom Stick",
-                    price: 120,
-                    image: "https://m.media-amazon.com/images/I/71yV5vZKKoL._SL1500_.jpg",
-                    description: "Strong bristles, wooden handle",
-                    details: "Bristle Material: Plastic\nHandle Material: Wood\nLength: 120cm\nType: Indoor/Outdoor\nColor: Brown"
-                },
-                {
-                    id: "h3",
-                    name: "Water Purifier",
-                    price: 2500,
-                    image: "https://m.media-amazon.com/images/I/71Q4+JQ2i4L._SL1500_.jpg",
-                    description: "5 stage filtration",
-                    details: "Stages: 5\nCapacity: 10 liters\nTechnology: RO+UV+UF\nInstallation: Counter Top\nWarranty: 1 year"
-                },
-                {
-                    id: "h4",
-                    name: "Storage Box Set",
-                    price: 800,
-                    image: "https://m.media-amazon.com/images/I/71XgNp3XZVL._SL1500_.jpg",
-                    description: "5 pieces plastic box set",
-                    details: "Number of Pieces: 5\nMaterial: Food Grade Plastic\nLids: Airtight\nStackable: Yes\nColors: Assorted"
-                }
-            ]
-        };
-
-        // Current state with localStorage support
-        let currentCategory = localStorage.getItem('currentCategory') || 'electronics';
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let currentProduct = null;
-
-        // Load products function
-        function loadProducts(category) {
-            currentCategory = category;
-            localStorage.setItem('currentCategory', category);
-            document.getElementById('current-category').textContent =
-                category.charAt(0).toUpperCase() + category.slice(1);
-           
-            const productsContainer = document.getElementById('products-container');
-            productsContainer.innerHTML = '';
-           
-            const products = sampleProducts[category];
-           
-            if (!products || products.length === 0) {
-                productsContainer.innerHTML = `
-                    <div class="col-span-2 text-center text-gray-500 py-8">
-                        No products found in this category
-                    </div>
-                `;
-                return;
-            }
-           
-            products.forEach(product => {
-                const productCard = `
-                    <div class="product-card bg-white rounded-lg shadow overflow-hidden">
-                        <div class="h-40 bg-gray-200" onclick="viewProduct('${category}', '${product.id}')">
-                            <img src="${product.image}" alt="${product.name}"
-                                 class="w-full h-full object-cover">
-                        </div>
-                        <div class="p-3">
-                            <h3 class="font-medium text-sm truncate" onclick="viewProduct('${category}', '${product.id}')">${product.name}</h3>
-                            <p class="text-orange-500 font-bold">৳${product.price}</p>
-                            <div class="flex mt-2 space-x-2">
-                                <button onclick="event.stopPropagation(); addToCart('${category}', '${product.id}')"
-                                        class="flex-1 bg-orange-500 text-white py-1 px-2 rounded text-sm hover:bg-orange-600">
-                                    Add to Cart
-                                </button>
-                                <button onclick="event.stopPropagation(); buyNow('${category}', '${product.id}')"
-                                        class="flex-1 bg-green-500 text-white py-1 px-2 rounded text-sm hover:bg-green-600">
-                                    Buy Now
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                productsContainer.innerHTML += productCard;
-            });
-        }
-
-        // Improved search function
-        function searchProducts() {
-            const searchInput = document.getElementById('search-input');
-            const searchTerm = searchInput.value.toLowerCase().trim();
-           
-            if (!searchTerm) {
-                loadProducts(currentCategory);
-                return;
-            }
-           
-            const productsContainer = document.getElementById('products-container');
-            productsContainer.innerHTML = '';
-           
-            // Search in all categories and product fields
-            let foundProducts = [];
-            Object.keys(sampleProducts).forEach(category => {
-                sampleProducts[category].forEach(product => {
-                    if (product.name.toLowerCase().includes(searchTerm) ||
-                        product.description.toLowerCase().includes(searchTerm) ||
-                        product.details.toLowerCase().includes(searchTerm)) {
-                        foundProducts.push({...product, category});
-                    }
-                });
-            });
-           
-            if (foundProducts.length === 0) {
-                productsContainer.innerHTML = `
-                    <div class="col-span-2 text-center text-gray-500 py-8">
-                        No products found for "${searchTerm}"
-                    </div>
-                `;
-                return;
-            }
-           
-            // Group by category for better display
-            const productsByCategory = {};
-            foundProducts.forEach(product => {
-                if (!productsByCategory[product.category]) {
-                    productsByCategory[product.category] = [];
-                }
-                productsByCategory[product.category].push(product);
-            });
-           
-            // Display with category headings
-            Object.keys(productsByCategory).forEach(category => {
-                const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
-                productsContainer.innerHTML += `
-                    <div class="col-span-2 mt-4">
-                        <h3 class="font-bold text-gray-700">${categoryName}</h3>
-                    </div>
-                `;
-               
-                productsByCategory[category].forEach(product => {
-                    const productCard = `
-                        <div class="product-card bg-white rounded-lg shadow overflow-hidden">
-                            <div class="h-40 bg-gray-200" onclick="viewProduct('${product.category}', '${product.id}')">
-                                <img src="${product.image}" alt="${product.name}"
-                                     class="w-full h-full object-cover">
-                            </div>
-                            <div class="p-3">
-                                <h3 class="font-medium text-sm truncate" onclick="viewProduct('${product.category}', '${product.id}')">${product.name}</h3>
-                                <p class="text-orange-500 font-bold">৳${product.price}</p>
-                                <div class="flex mt-2 space-x-2">
-                                    <button onclick="event.stopPropagation(); addToCart('${product.category}', '${product.id}')"
-                                            class="flex-1 bg-orange-500 text-white py-1 px-2 rounded text-sm hover:bg-orange-600">
-                                        Add to Cart
-                                    </button>
-                                    <button onclick="event.stopPropagation(); buyNow('${product.category}', '${product.id}')"
-                                            class="flex-1 bg-green-500 text-white py-1 px-2 rounded text-sm hover:bg-green-600">
-                                        Buy Now
-                                    </button>
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <h3 class="font-bold mb-4">Recent Orders</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between border-b pb-3">
+                                    <div>
+                                        <p class="font-medium">#ORD-1256</p>
+                                        <p class="text-sm text-gray-500">2 items</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-orange-500 font-medium">৳1,250</p>
+                                        <p class="text-xs text-gray-500">10 min ago</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between border-b pb-3">
+                                    <div>
+                                        <p class="font-medium">#ORD-1255</p>
+                                        <p class="text-sm text-gray-500">5 items</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-orange-500 font-medium">৳2,850</p>
+                                        <p class="text-xs text-gray-500">25 min ago</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between border-b pb-3">
+                                    <div>
+                                        <p class="font-medium">#ORD-1254</p>
+                                        <p class="text-sm text-gray-500">1 item</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-orange-500 font-medium">৳650</p>
+                                        <p class="text-xs text-gray-500">1 hour ago</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium">#ORD-1253</p>
+                                        <p class="text-sm text-gray-500">3 items</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-orange-500 font-medium">৳1,750</p>
+                                        <p class="text-xs text-gray-500">2 hours ago</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    `;
-                    productsContainer.innerHTML += productCard;
-                });
-            });
-           
-            document.getElementById('current-category').textContent = 'Search Results';
-        }
-
-        // View product details
-        function viewProduct(category, productId) {
-            const product = sampleProducts[category].find(p => p.id === productId);
-            if (product) {
-                currentProduct = product;
-               
-                // Set product details
-                document.getElementById('product-view-image').src = product.image;
-                document.getElementById('product-view-name').textContent = product.name;
-                document.getElementById('product-view-price').textContent = '৳' + product.price;
-                document.getElementById('product-view-description').textContent = product.description;
-               
-                // Format and display additional details
-                const details = product.details.split('\n').map(line => {
-                    const parts = line.split(':');
-                    if (parts.length > 1) {
-                        return `<p><span class="font-medium">${parts[0]}:</span> ${parts.slice(1).join(':')}</p>`;
-                    }
-                    return `<p>${line}</p>`;
-                }).join('');
-               
-                document.getElementById('product-view-details').innerHTML = details;
-               
-                // Show product view section
-                showSection('product-view');
-            }
-        }
-
-        // Go back from product view
-        function goBack() {
-            showSection('home');
-        }
-
-        // Add to cart from product view
-        function addToCartFromView() {
-            if (currentProduct) {
-                const existingItem = cart.find(item => item.id === currentProduct.id);
-               
-                if (existingItem) {
-                    existingItem.quantity += 1;
-                } else {
-                    cart.push({
-                        ...currentProduct,
-                        quantity: 1
-                    });
-                }
-               
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCart();
-                showToast(`${currentProduct.name} added to cart!`);
-                updateCartCount();
-            }
-        }
-
-        // Buy now from product view
-        function buyNowFromView() {
-            if (currentProduct) {
-                // Clear cart and add only this product
-                cart = [{
-                    ...currentProduct,
-                    quantity: 1
-                }];
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCart();
-                updateCartCount();
-                showSection('cart');
-            }
-        }
-
-        // Improved cart system with quantity
-        function addToCart(category, productId) {
-            const product = sampleProducts[category].find(p => p.id === productId);
-            if (product) {
-                const existingItem = cart.find(item => item.id === productId);
-               
-                if (existingItem) {
-                    existingItem.quantity += 1;
-                } else {
-                    cart.push({
-                        ...product,
-                        quantity: 1
-                    });
-                }
-               
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCart();
-                showToast(`${product.name} added to cart!`);
-                updateCartCount();
-            }
-        }
-
-        // Remove from cart with quantity control
-        function removeFromCart(productId, removeAll = false) {
-            const itemIndex = cart.findIndex(item => item.id === productId);
-           
-            if (itemIndex !== -1) {
-                if (removeAll || cart[itemIndex].quantity <= 1) {
-                    cart.splice(itemIndex, 1);
-                } else {
-                    cart[itemIndex].quantity -= 1;
-                }
-               
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCart();
-                updateCartCount();
-            }
-        }
-
-        // Update cart count in header
-        function updateCartCount() {
-            const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const cartCountElement = document.getElementById('cart-count');
-           
-            if (cartCount > 0) {
-                cartCountElement.textContent = cartCount;
-                cartCountElement.classList.remove('hidden');
-            } else {
-                cartCountElement.classList.add('hidden');
-            }
-        }
-
-        // Update cart function
-        function updateCart() {
-            const cartItemsContainer = document.getElementById('cart-items');
-            const cartSubtotal = document.getElementById('cart-subtotal');
-            const cartTotal = document.getElementById('cart-total');
-           
-            if (cart.length === 0) {
-                cartItemsContainer.innerHTML = '<p class="text-center text-gray-500 py-8">Your cart is empty</p>';
-                cartSubtotal.textContent = '৳0';
-                cartTotal.textContent = '৳50';
-                return;
-            }
-           
-            // Calculate subtotal
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const total = subtotal + 50; // Adding delivery charge
-           
-            // Update cart items
-            cartItemsContainer.innerHTML = '';
-            cart.forEach(item => {
-                const cartItem = `
-                    <div class="flex items-center p-3 border-b">
-                        <div class="w-16 h-16 bg-gray-200 rounded mr-3" onclick="viewProduct('${item.category}', '${item.id}')">
-                            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="text-sm font-medium">${item.name}</h4>
-                            <p class="text-orange-500 text-sm">৳${item.price} x ${item.quantity} = ৳${item.price * item.quantity}</p>
-                        </div>
-                        <div class="flex items-center">
-                            <button onclick="event.stopPropagation(); removeFromCart('${item.id}')" class="quantity-btn bg-gray-200 rounded-l">
-                                -
-                            </button>
-                            <span class="px-2">${item.quantity}</span>
-                            <button onclick="event.stopPropagation(); addToCart('${item.category}', '${item.id}')" class="quantity-btn bg-gray-200 rounded-r">
-                                +
-                            </button>
-                            <button onclick="event.stopPropagation(); removeFromCart('${item.id}', true)" class="ml-2 text-red-500">
-                                ✕
-                            </button>
-                        </div>
                     </div>
-                `;
-                cartItemsContainer.innerHTML += cartItem;
-            });
-           
-            // Update totals
-            cartSubtotal.textContent = `৳${subtotal}`;
-            cartTotal.textContent = `৳${total}`;
-        }
-
-        // Load checkout items
-        function loadCheckoutItems() {
-            const checkoutItemsContainer = document.getElementById('checkout-items');
-            const checkoutSubtotal = document.getElementById('checkout-subtotal');
-            const checkoutTotal = document.getElementById('checkout-total');
-           
-            checkoutItemsContainer.innerHTML = '';
-           
-            if (cart.length === 0) {
-                return;
-            }
-           
-            // Calculate subtotal
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const total = subtotal + 50; // Adding delivery charge
-           
-            // Update checkout items
-            cart.forEach(item => {
-                const checkoutItem = `
-                    <div class="flex items-center mb-2 p-2 bg-gray-50 rounded">
-                        <div class="w-12 h-12 bg-gray-200 rounded mr-3">
-                            <img src="${item.image}" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="text-sm font-medium">${item.name}</h4>
-                            <p class="text-orange-500 text-sm">৳${item.price} x ${item.quantity}</p>
-                        </div>
-                    </div>
-                `;
-                checkoutItemsContainer.innerHTML += checkoutItem;
-            });
-           
-            // Update totals
-            checkoutSubtotal.textContent = `৳${subtotal}`;
-            checkoutTotal.textContent = `৳${total}`;
-        }
-
-        // Toast notification function
-        function showToast(message) {
-            Toastify({
-                text: message,
-                duration: 3000,
-                close: true,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "#f97316",
-                stopOnFocus: true
-            }).showToast();
-        }
-
-        // Improved form validation
-        function placeOrder() {
-            const form = document.getElementById('delivery-form');
-            const inputs = form.querySelectorAll('input[required], textarea[required]');
-            let isValid = true;
-           
-            // Validate each required field
-            inputs.forEach(input => {
-                if (!input.value.trim()) {
-                    input.classList.add('border-red-500');
-                    isValid = false;
-                } else {
-                    input.classList.remove('border-red-500');
                    
-                    // Specific validation for phone number
-                    if (input.type === 'tel' && !/^01[3-9]\d{8}$/.test(input.value)) {
-                        input.classList.add('border-red-500');
-                        isValid = false;
-                        showToast('Please enter a valid Bangladeshi phone number');
-                    }
-                }
-            });
-           
-            if (!isValid) {
-                showToast('Please fill all required fields correctly');
-                return;
-            }
-           
-            const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
-           
-            if (paymentMethod === 'bkash') {
-                const transactionId = document.querySelector('#bkash-details input').value;
-                if (!transactionId) {
-                    showToast('Please enter bKash transaction ID');
-                    return;
-                }
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="font-bold mb-4">Top Selling Products</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sold</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded overflow-hidden">
+                                                    <img src="https://m.media-amazon.com/images/I/61L1ItFgFHL._SL1500_.jpg" class="h-full w-full object-cover">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Smartphone X3</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronics</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">৳15,500</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">42</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-orange-500">৳6,51,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded overflow-hidden">
+                                                    <img src="https://m.media-amazon.com/images/I/81VJZ+8X1YL._AC_UL1500_.jpg" class="h-full w-full object-cover">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Saree</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Clothing</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">৳1,200</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-orange-500">৳45,600</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded overflow-hidden">
+                                                    <img src="https://m.media-amazon.com/images/I/71YHblzCgVL._SL1500_.jpg" class="h-full w-full object-cover">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Pure Mustard Oil</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Grocery</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">৳180</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">35</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-orange-500">৳6,300</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
                
-                // Basic bKash transaction ID validation
-                if (!/^\d{10}$/.test(transactionId)) {
-                    showToast('Please enter a valid 10-digit bKash transaction ID');
-                    return;
-                }
-            }
+                <!-- Products Section -->
+                <div id="products-section" class="admin-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold">Products Management</h2>
+                        <button onclick="showProductModal()" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                            <i class="fas fa-plus mr-2"></i> Add Product
+                        </button>
+                    </div>
+                   
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="p-4 border-b flex justify-between items-center">
+                            <div class="flex items-center">
+                                <select class="border rounded px-3 py-1 mr-2">
+                                    <option>Bulk Action</option>
+                                    <option>Delete Selected</option>
+                                    <option>Change Category</option>
+                                </select>
+                                <button class="bg-gray-100 px-3 py-1 rounded text-sm">Apply</button>
+                            </div>
+                            <div class="relative">
+                                <input type="text" placeholder="Search products..." class="border rounded px-3 py-1 pl-8">
+                                <i class="fas fa-search absolute left-3 top-2 text-gray-400"></i>
+                            </div>
+                        </div>
+                       
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <input type="checkbox">
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="checkbox">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded overflow-hidden">
+                                                    <img src="https://m.media-amazon.com/images/I/61L1ItFgFHL._SL1500_.jpg" class="h-full w-full object-cover">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Smartphone X3</div>
+                                                    <div class="text-sm text-gray-500">#PRD-001</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronics</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">৳15,500</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">25</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fas fa-edit"></i></a>
+                                            <a href="#" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="checkbox">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded overflow-hidden">
+                                                    <img src="https://m.media-amazon.com/images/I/81VJZ+8X1YL._AC_UL1500_.jpg" class="h-full w-full object-cover">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Saree</div>
+                                                    <div class="text-sm text-gray-500">#PRD-002</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Clothing</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">৳1,200</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fas fa-edit"></i></a>
+                                            <a href="#" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="checkbox">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded overflow-hidden">
+                                                    <img src="https://m.media-amazon.com/images/I/71YHblzCgVL._SL1500_.jpg" class="h-full w-full object-cover">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Pure Mustard Oil</div>
+                                                    <div class="text-sm text-gray-500">#PRD-003</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Grocery</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">৳180</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Out of Stock</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fas fa-edit"></i></a>
+                                            <a href="#" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                       
+                        <div class="p-4 border-t flex items-center justify-between">
+                            <div class="text-sm text-gray-500">
+                                Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">15</span> products
+                            </div>
+                            <div class="flex space-x-1">
+                                <button class="px-3 py-1 border rounded text-sm bg-gray-100">&laquo;</button>
+                                <button class="px-3 py-1 border rounded text-sm bg-orange-500 text-white">1</button>
+                                <button class="px-3 py-1 border rounded text-sm">2</button>
+                                <button class="px-3 py-1 border rounded text-sm">3</button>
+                                <button class="px-3 py-1 border rounded text-sm">&raquo;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Orders Section -->
+                <div id="orders-section" class="admin-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold">Orders Management</h2>
+                        <div class="flex items-center space-x-2">
+                            <select class="border rounded px-3 py-1">
+                                <option>Filter by Status</option>
+                                <option>Pending</option>
+                                <option>Processing</option>
+                                <option>Completed</option>
+                                <option>Cancelled</option>
+                            </select>
+                            <input type="date" class="border rounded px-3 py-1">
+                        </div>
+                    </div>
+                   
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-orange-500">#ORD-1256</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Rahim Khan</div>
+                                            <div class="text-sm text-gray-500">01712-345678</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 Jun 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">৳1,250</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Cash on Delivery</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fas fa-eye"></i></a>
+                                            <a href="#" class="text-green-500 hover:text-green-700 mr-3"><i class="fas fa-check"></i></a>
+                                            <a href="#" class="text-red-500 hover:text-red-700"><i class="fas fa-times"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-orange-500">#ORD-1255</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Fatema Begum</div>
+                                            <div class="text-sm text-gray-500">01812-987654</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">14 Jun 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">৳2,850</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">bKash</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Processing</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fas fa-eye"></i></a>
+                                            <a href="#" class="text-green-500 hover:text-green-700 mr-3"><i class="fas fa-check"></i></a>
+                                            <a href="#" class="text-red-500 hover:text-red-700"><i class="fas fa-times"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-orange-500">#ORD-1254</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Karim Uddin</div>
+                                            <div class="text-sm text-gray-500">01912-456789</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">13 Jun 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">৳650</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Cash on Delivery</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fas fa-eye"></i></a>
+                                            <a href="#" class="text-green-500 hover:text-green-700 mr-3"><i class="fas fa-check"></i></a>
+                                            <a href="#" class="text-red-500 hover:text-red-700"><i class="fas fa-times"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                       
+                        <div class="p-4 border-t flex items-center justify-between">
+                            <div class="text-sm text-gray-500">
+                                Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">15</span> orders
+                            </div>
+                            <div class="flex space-x-1">
+                                <button class="px-3 py-1 border rounded text-sm bg-gray-100">&laquo;</button>
+                                <button class="px-3 py-1 border rounded text-sm bg-orange-500 text-white">1</button>
+                                <button class="px-3 py-1 border rounded text-sm">2</button>
+                                <button class="px-3 py-1 border rounded text-sm">3</button>
+                                <button class="px-3 py-1 border rounded text-sm">&raquo;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Customers Section -->
+                <div id="customers-section" class="admin-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold">Customers Management</h2>
+                        <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                            <i class="fas fa-plus mr-2"></i> Add Customer
+                        </button>
+                    </div>
+                   
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <div class="flex items-center">
+                                <div class="bg-blue-100 p-3 rounded-full text-blue-500 mr-4">
+                                    <i class="fas fa-users fa-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500">Total Customers</p>
+                                    <h3 class="text-2xl font-bold">89</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <div class="flex items-center">
+                                <div class="bg-green-100 p-3 rounded-full text-green-500 mr-4">
+                                    <i class="fas fa-shopping-cart fa-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500">Active Customers</p>
+                                    <h3 class="text-2xl font-bold">72</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <div class="flex items-center">
+                                <div class="bg-purple-100 p-3 rounded-full text-purple-500 mr-4">
+                                    <i class="fas fa-chart-line fa-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500">New This Month</p>
+                                    <h3 class="text-2xl font-bold">15</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="p-4 border-b flex justify-between items-center">
+                            <div class="relative">
+                                <input type="text" placeholder="Search customers..." class="border rounded px-3 py-1 pl-8">
+                                <i class="fas fa-search absolute left-3 top-2 text-gray-400"></i>
+                            </div>
+                        </div>
+                       
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Orders</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Spent</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Order</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full overflow-hidden">
+                                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" class="h-full w-full object-cover">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Rahim Khan</div>
+                                                    <div class="text-sm text-gray-500">rahim@example.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">01712-345678</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">৳15,250</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 Jun 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fas fa-eye"></i></a>
+                                            <a href="#" class="text-green-500 hover:text-green-700 mr-3"><i class="fas fa-edit"></i></a>
+                                            <a href="#" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full overflow-hidden">
+                                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" class="h-full w-full object-cover">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Fatema Begum</div>
+                                                    <div class="text-sm text-gray-500">fatema@example.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">01812-987654</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">8</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">৳9,850</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">14 Jun 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fas fa-eye"></i></a>
+                                            <a href="#" class="text-green-500 hover:text-green-700 mr-3"><i class="fas fa-edit"></i></a>
+                                            <a href="#" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full overflow-hidden">
+                                                    <img src="https://randomuser.me/api/portraits/men/67.jpg" class="h-full w-full object-cover">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Karim Uddin</div>
+                                                    <div class="text-sm text-gray-500">karim@example.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">01912-456789</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">৳6,750</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">13 Jun 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fas fa-eye"></i></a>
+                                            <a href="#" class="text-green-500 hover:text-green-700 mr-3"><i class="fas fa-edit"></i></a>
+                                            <a href="#" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                       
+                        <div class="p-4 border-t flex items-center justify-between">
+                            <div class="text-sm text-gray-500">
+                                Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">89</span> customers
+                            </div>
+                            <div class="flex space-x-1">
+                                <button class="px-3 py-1 border rounded text-sm bg-gray-100">&laquo;</button>
+                                <button class="px-3 py-1 border rounded text-sm bg-orange-500 text-white">1</button>
+                                <button class="px-3 py-1 border rounded text-sm">2</button>
+                                <button class="px-3 py-1 border rounded text-sm">3</button>
+                                <button class="px-3 py-1 border rounded text-sm">&raquo;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Categories Section -->
+                <div id="categories-section" class="admin-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold">Categories Management</h2>
+                        <button onclick="showCategoryModal()" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                            <i class="fas fa-plus mr-2"></i> Add Category
+                        </button>
+                    </div>
+                   
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Products</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center">
+                                                    📱
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Electronics</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fas fa-edit"></i></a>
+                                            <a href="#" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center">
+                                                    👕
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Clothing</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fas fa-edit"></i></a>
+                                            <a href="#" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center">
+                                                    🛒
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Grocery</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fas fa-edit"></i></a>
+                                            <a href="#" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Reports Section -->
+                <div id="reports-section" class="admin-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold">Reports & Analytics</h2>
+                        <div class="flex items-center space-x-2">
+                            <select class="border rounded px-3 py-1">
+                                <option>Last 7 Days</option>
+                                <option>Last Month</option>
+                                <option selected>Last Year</option>
+                            </select>
+                            <button class="bg-orange-500 text-white px-3 py-1 rounded">
+                                <i class="fas fa-download mr-1"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                   
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <h3 class="font-bold mb-4">Sales Report</h3>
+                            <div class="h-64 bg-gray-100 rounded flex items-center justify-center">
+                                [Sales Chart Placeholder]
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <h3 class="font-bold mb-4">Revenue Report</h3>
+                            <div class="h-64 bg-gray-100 rounded flex items-center justify-center">
+                                [Revenue Chart Placeholder]
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="bg-white p-6 rounded-lg shadow mb-6">
+                        <h3 class="font-bold mb-4">Top Selling Products</h3>
+                        <div class="h-64 bg-gray-100 rounded flex items-center justify-center">
+                            [Products Chart Placeholder]
+                        </div>
+                    </div>
+                   
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="font-bold mb-4">Customer Acquisition</h3>
+                        <div class="h-64 bg-gray-100 rounded flex items-center justify-center">
+                            [Customers Chart Placeholder]
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Settings Section -->
+                <div id="settings-section" class="admin-section hidden">
+                    <h2 class="text-xl font-bold mb-6">Settings</h2>
+                   
+                    <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                        <div class="p-4 border-b">
+                            <h3 class="font-bold">Shop Information</h3>
+                        </div>
+                        <div class="p-6">
+                            <form>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Shop Name</label>
+                                        <input type="text" class="w-full border rounded px-3 py-2" value="Chilmari E-shop">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Shop Email</label>
+                                        <input type="email" class="w-full border rounded px-3 py-2" value="info@chilmari-eshop.com">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Shop Phone</label>
+                                        <input type="tel" class="w-full border rounded px-3 py-2" value="01770706309">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Shop Address</label>
+                                        <input type="text" class="w-full border rounded px-3 py-2" value="Chilmari, Kurigram, Bangladesh">
+                                    </div>
+                                </div>
+                                <div class="mt-6">
+                                    <button type="submit" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                   
+                    <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                        <div class="p-4 border-b">
+                            <h3 class="font-bold">Payment Methods</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-3 border rounded">
+                                    <div class="flex items-center">
+                                        <div class="bg-gray-100 p-2 rounded mr-3">
+                                            <i class="fas fa-money-bill-wave text-green-500"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium">Cash on Delivery</h4>
+                                            <p class="text-sm text-gray-500">Pay when you receive the product</p>
+                                        </div>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between p-3 border rounded">
+                                    <div class="flex items-center">
+                                        <div class="bg-gray-100 p-2 rounded mr-3">
+                                            <i class="fas fa-mobile-alt text-blue-500"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium">bKash</h4>
+                                            <p class="text-sm text-gray-500">Mobile banking payment</p>
+                                        </div>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between p-3 border rounded">
+                                    <div class="flex items-center">
+                                        <div class="bg-gray-100 p-2 rounded mr-3">
+                                            <i class="fas fa-credit-card text-purple-500"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium">Credit/Debit Card</h4>
+                                            <p class="text-sm text-gray-500">Coming soon</p>
+                                        </div>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" disabled class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-500"></div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="p-4 border-b">
+                            <h3 class="font-bold">Delivery Settings</h3>
+                        </div>
+                        <div class="p-6">
+                            <form>
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Charge</label>
+                                    <input type="number" class="w-full border rounded px-3 py-2" value="50">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Areas</label>
+                                    <div class="border rounded p-2">
+                                        <div class="flex items-center mb-2">
+                                            <input type="checkbox" checked class="mr-2">
+                                            <span>Chilmari</span>
+                                        </div>
+                                        <div class="flex items-center mb-2">
+                                            <input type="checkbox" class="mr-2">
+                                            <span>Kurigram</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="mr-2">
+                                            <span>Other Areas</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button type="submit" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="product-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-screen overflow-y-auto">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-bold">Add New Product</h3>
+                <button onclick="hideModal('product-modal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <form>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+                            <input type="text" class="w-full border rounded px-3 py-2" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                            <select class="w-full border rounded px-3 py-2" required>
+                                <option value="">Select Category</option>
+                                <option>Electronics</option>
+                                <option>Clothing</option>
+                                <option>Grocery</option>
+                                <option>Household</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Price (৳)</label>
+                            <input type="number" class="w-full border rounded px-3 py-2" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
+                            <input type="number" class="w-full border rounded px-3 py-2" required>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea class="w-full border rounded px-3 py-2" rows="3"></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Product Images</label>
+                            <div class="border-2 border-dashed rounded p-4 text-center">
+                                <div class="flex justify-center mb-2">
+                                    <i class="fas fa-cloud-upload-alt text-3xl text-gray-400"></i>
+                                </div>
+                                <p class="text-sm text-gray-500">Drag & drop images here or click to browse</p>
+                                <input type="file" class="hidden" multiple>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button type="button" onclick="hideModal('product-modal')" class="px-4 py-2 border rounded hover:bg-gray-100">
+                            Cancel
+                        </button>
+                        <button type="submit" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                            Save Product
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div id="category-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-md">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-bold">Add New Category</h3>
+                <button onclick="hideModal('category-modal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <form>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
+                        <input type="text" class="w-full border rounded px-3 py-2" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Icon</label>
+                        <div class="grid grid-cols-5 gap-2">
+                            <button type="button" class="p-2 border rounded hover:bg-gray-100">📱</button>
+                            <button type="button" class="p-2 border rounded hover:bg-gray-100">👕</button>
+                            <button type="button" class="p-2 border rounded hover:bg-gray-100">🛒</button>
+                            <button type="button" class="p-2 border rounded hover:bg-gray-100">🏠</button>
+                            <button type="button" class="p-2 border rounded hover:bg-gray-100">🍎</button>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select class="w-full border rounded px-3 py-2" required>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" onclick="hideModal('category-modal')" class="px-4 py-2 border rounded hover:bg-gray-100">
+                            Cancel
+                        </button>
+                        <button type="submit" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                            Save Category
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content-area');
            
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 50;
-           
-            showToast(`Order placed successfully!\nTotal: ৳${total}\nPayment: ${paymentMethod === 'cod' ? 'Cash on Delivery' : 'bKash'}`);
-           
-            // Clear cart
-            cart = [];
-            localStorage.removeItem('cart');
-            updateCart();
-            updateCartCount();
-            showSection('home');
+            sidebar.classList.toggle('sidebar-collapsed');
+            content.classList.toggle('content-collapsed');
         }
 
-        // Payment method toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('bkash').addEventListener('change', function() {
-                document.getElementById('bkash-details').classList.toggle('hidden', !this.checked);
-            });
-           
-            document.getElementById('cod').addEventListener('change', function() {
-                document.getElementById('bkash-details').classList.toggle('hidden', this.checked);
-            });
-           
-            // Enter key press for search
-            document.getElementById('search-input').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    searchProducts();
-                }
-            });
-
-            // Input validation on blur
-            document.getElementById('delivery-form').addEventListener('blur', function(e) {
-                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                    if (e.target.required && !e.target.value.trim()) {
-                        e.target.classList.add('border-red-500');
-                    } else {
-                        e.target.classList.remove('border-red-500');
-                    }
-                }
-            }, true);
-
-            // Load initial cart count
-            updateCartCount();
-        });
-
-        // Show section function
-        function showSection(sectionId) {
+        // Show admin section
+        function showAdminSection(sectionId) {
             // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active-section');
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.add('hidden');
             });
            
             // Show selected section
-            document.getElementById(`${sectionId}-section`).classList.add('active-section');
+            document.getElementById(`${sectionId}-section`).classList.remove('hidden');
            
-            // Update active nav item
-            document.querySelectorAll('nav a').forEach(navItem => {
-                navItem.classList.remove('active-nav');
-                navItem.classList.add('text-gray-600');
+            // Update active menu
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active-menu');
             });
            
-            // Set current nav as active if it's in the bottom nav
-            const navItem = document.querySelector(`nav a[onclick="showSection('${sectionId}')"]`);
-            if (navItem) {
-                navItem.classList.add('active-nav');
-                navItem.classList.remove('text-gray-600');
+            // Set current menu as active
+            const menuItem = document.querySelector(`.menu-item[onclick="showAdminSection('${sectionId}')"]`);
+            if (menuItem) {
+                menuItem.classList.add('active-menu');
             }
            
-            // Update section data if needed
-            if (sectionId === 'cart') {
-                updateCart();
-            } else if (sectionId === 'checkout') {
-                loadCheckoutItems();
-            }
+            // Update section title
+            const titleMap = {
+                'dashboard': 'Dashboard',
+                'products': 'Products Management',
+                'orders': 'Orders Management',
+                'customers': 'Customers Management',
+                'categories': 'Categories Management',
+                'reports': 'Reports & Analytics',
+                'settings': 'Settings'
+            };
+           
+            document.getElementById('admin-section-title').textContent = titleMap[sectionId];
         }
 
-        // Buy now function
-        function buyNow(category, productId) {
-            const product = sampleProducts[category].find(p => p.id === productId);
-            if (product) {
-                // Clear cart and add only this product
-                cart = [{
-                    ...product,
-                    quantity: 1
-                }];
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCart();
-                updateCartCount();
-                showSection('cart');
-            }
+        // Show product modal
+        function showProductModal() {
+            document.getElementById('product-modal').classList.remove('hidden');
         }
 
-        // Initialize the app
+        // Show category modal
+        function showCategoryModal() {
+            document.getElementById('category-modal').classList.remove('hidden');
+        }
+
+        // Hide modal
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Initialize the admin panel
         document.addEventListener('DOMContentLoaded', function() {
-            loadProducts(currentCategory);
+            showAdminSection('dashboard');
         });
-    </script>
-</body>
-</html><form id="orderForm">
-  <input type="text" name="name" placeholder="Your Name" required />
-  <input type="text" name="phone" placeholder="Phone Number" required />
-  <input type="text" name="product" placeholder="Product Name" required />
-  <textarea name="address" placeholder="Address" required></textarea>
-  <button type="submit">Submit Order</button>
-</form>
+    </script><script>
+  const form = document.getElementById('orderForm');
+  const successMsg = document.getElementById('successMsg');
 
-<p id="successMsg" style="color: green;"></p>
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
 
+    const data = {
+      name: form.name.value,
+      phone: form.phone.value,
+      product: form.product.value,
+      address: form.address.value,
+    };
 
-# fghbgfhgfgf
+    fetch("https://script.google.com/macros/s/YOUR_DEPLOYED_URL/exec", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.text())
+    .then(response => {
+      successMsg.textContent = "অর্ডার সফলভাবে সাবমিট হয়েছে!";
+      form.reset();
+    })
+    .catch(err => {
+      successMsg.textContent = "সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।";
+    });
+  });
+</script>
