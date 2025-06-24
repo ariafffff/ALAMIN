@@ -944,7 +944,19 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadProducts(currentCategory);
         });
-    </script><script>
+    </script> <!-- ✅ Checkout Form (Place inside Checkout Section, above "Place Order" button) -->
+<form id="orderForm" class="mt-6 bg-white p-4 rounded shadow mb-4">
+  <h2 class="text-lg font-bold mb-4">Submit Your Order to Google Sheet</h2>
+  <input type="text" name="name" placeholder="Your Name" required class="w-full p-2 border rounded mb-2" />
+  <input type="tel" name="phone" placeholder="Phone Number" required class="w-full p-2 border rounded mb-2" />
+  <input type="text" name="product" placeholder="Product Name" required class="w-full p-2 border rounded mb-2" />
+  <textarea name="address" placeholder="Delivery Address" required class="w-full p-2 border rounded mb-2"></textarea>
+  <p id="successMsg" class="text-green-600 mt-2 text-sm font-medium"></p>
+  <button type="submit" class="mt-4 w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600">Confirm Order</button>
+</form>
+
+<!-- ✅ Google Sheets Integration Script (Paste before </body>) -->
+<script>
   const form = document.getElementById('orderForm');
   const successMsg = document.getElementById('successMsg');
 
@@ -958,7 +970,7 @@
       address: form.address.value,
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbyB7NRX4-TlIRIVCwbW1bFuOg7ssBrOLlJ34OSYuvfC29w1SpYRXpA9pzn_u-wPOr78Ow/exec ", {
+    fetch("https://script.google.com/macros/s/AKfycbyB7NRX4-TlIRIVCwbW1bFuOg7ssBrOLlJ34OSYuvfC29w1SpYRXpA9pzn_u-wPOr78Ow/exec", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -967,11 +979,11 @@
     })
     .then(res => res.text())
     .then(response => {
-      successMsg.textContent = "অর্ডার সফলভাবে সাবমিট হয়েছে!";
+      successMsg.textContent = "✅ অর্ডার সফলভাবে সাবমিট হয়েছে!";
       form.reset();
     })
     .catch(err => {
-      successMsg.textContent = "সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।";
+      successMsg.textContent = "❌ সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।";
     });
   });
 </script>
